@@ -8,10 +8,14 @@ environment:
   sdk: '>=3.3.4 <4.0.0'
 
 dependencies:
+  equatable: ^2.0.5
   flex_color_scheme: ^7.3.1
   flutter:
     sdk: flutter
+  gap: ^3.0.1
   google_fonts: ^6.2.1
+  iconsax: ^0.0.8
+  timeago: ^3.6.1
 
 dev_dependencies:
   flutter_native_splash: ^2.4.0

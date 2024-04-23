@@ -12,7 +12,17 @@ class ChatRoomApp extends StatelessWidget {
       title: 'Chatroom',
       darkTheme: AppTheme.dark(),
       themeMode: ThemeMode.dark,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      initialRoute: HomeScreen.routeName,
+      onGenerateRoute: (settings) {
+        if (settings.name == HomeScreen.routeName) {
+          return HomeScreen.route(settings);
+        } else {
+          return null;
+        }
+      },
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        physics: const BouncingScrollPhysics(),
+      ),
     );
   }
 }

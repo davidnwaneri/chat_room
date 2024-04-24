@@ -2,6 +2,7 @@ import 'package:chatroom/chatroom_feature/domain/entities/conversation_entity.da
 import 'package:chatroom/chatroom_feature/presentations/blocs/conversation_list/conversation_list_bloc.dart';
 import 'package:chatroom/chatroom_feature/presentations/view/conversation_screen.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/conversation_widget.dart';
+import 'package:chatroom/chatroom_feature/presentations/widgets/empty_view.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/error_view.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/loading_view.dart';
 import 'package:chatroom/utils/padding_constants.dart';
@@ -77,6 +78,10 @@ class _ConversationsLoadedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (conversations.isEmpty) {
+      return const EmptyView('Your conversations will appear hear');
+    }
+
     return ListView.builder(
       itemCount: conversations.length,
       itemBuilder: (context, index) {

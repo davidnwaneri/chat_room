@@ -18,6 +18,7 @@ dependencies:
   gap: ^3.0.1
   google_fonts: ^6.2.1
   iconsax: ^0.0.8
+  intl: ^0.19.0
   meta: ^1.11.0
   talker_dio_logger: ^2.4.0
   timeago: ^3.6.1

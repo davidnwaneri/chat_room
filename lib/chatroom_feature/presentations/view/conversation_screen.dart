@@ -3,10 +3,11 @@ import 'package:chatroom/chatroom_feature/domain/entities/message_entity.dart';
 import 'package:chatroom/chatroom_feature/presentations/blocs/conversation_list/conversation_list_bloc.dart';
 import 'package:chatroom/chatroom_feature/presentations/view/chatroom_details_screen.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/chatroom_profile_avatar.dart';
+import 'package:chatroom/chatroom_feature/presentations/widgets/empty_view.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/error_view.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/loading_view.dart';
+import 'package:chatroom/chatroom_feature/presentations/widgets/message_bubble.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/message_text_field.dart';
-import 'package:chatroom/chatroom_feature/presentations/widgets/message_widget.dart';
 import 'package:chatroom/utils/padding_constants.dart';
 import 'package:chatroom/utils/widget_library/widget_library.dart';
 import 'package:flutter/material.dart';
@@ -123,13 +124,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
             ),
           ),
         ),
-        body: Padding(
-          padding: horizontalPadding12 + const EdgeInsets.only(bottom: 4),
-          child: BlocBuilder<ConversationListBloc, ConversationListState>(
-            builder: (context, state) {
-              return Column(
-                children: [
-                  Expanded(
+        body: BlocBuilder<ConversationListBloc, ConversationListState>(
+          builder: (context, state) {
+            return Column(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: horizontalPadding12,
                     child: switch (state.status) {
                       ConversationListInitial() => const SizedBox(),
                       ConversationListLoading(:final conversationId) => (conversationId == widget.conversation.id)
@@ -151,13 +152,16 @@ class _ConversationScreenState extends State<ConversationScreen> {
                               ),
                     },
                   ),
-                  MessageTextField(
+                ),
+                Padding(
+                  padding: horizontalPadding12 + const EdgeInsets.symmetric(vertical: 8),
+                  child: MessageTextField(
                     controller: _textController,
                   ),
-                ],
-              );
-            },
-          ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -171,24 +175,17 @@ class _MessageLoadedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (messages.isEmpty) return const _EmptyMessageView();
+    if (messages.isEmpty) return const EmptyView('No messages yet');
 
     return ListView.builder(
+      reverse: true,
       itemCount: messages.length,
       itemBuilder: (context, index) {
-        return MessageWidget();
+        final message = messages[index];
+        return MessageBubble(
+          message: message,
+        );
       },
-    );
-  }
-}
-
-class _EmptyMessageView extends StatelessWidget {
-  const _EmptyMessageView();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('No messages yet'),
     );
   }
 }

@@ -85,12 +85,12 @@ class _ConversationsLoadedView extends StatelessWidget {
           conversation: conversation,
           onTap: () {
             final hasFetchedMessages = context //
-                .read<ConversationListBloc>() //
-                .state //
-                .conversations //
-                .firstWhere((e) => e.id == conversation.id) //
-                .messages
-                .isNotEmpty;
+                    .read<ConversationListBloc>() //
+                    .state //
+                    .conversations //
+                    .firstWhere((e) => e.id == conversation.id) //
+                    .messages !=
+                null;
             if (hasFetchedMessages == false) {
               context.read<ConversationListBloc>().add(ConversationMessagesFetched(conversation.id));
             }

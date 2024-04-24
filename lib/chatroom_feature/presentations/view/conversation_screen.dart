@@ -85,6 +85,22 @@ class _ConversationScreenState extends State<ConversationScreen> {
         appBar: AppBar(
           surfaceTintColor: Colors.transparent,
           titleSpacing: 0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: PopupMenuButton(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem<String>(
+                      onTap: _fetchMessages,
+                      child: const Text('Refresh'),
+                    ),
+                  ];
+                },
+                child: const Icon(Icons.more_vert),
+              ),
+            ),
+          ],
           title: InkWell(
             onTap: _goToChatRoomDetails,
             customBorder: const RoundedRectangleBorder(

@@ -11,7 +11,7 @@ class ConversationEntity extends Equatable {
     required this.lastMessage,
     required this.lastModified,
     required this.members,
-    this.messages = const [],
+    this.messages,
     this.topic,
   });
 
@@ -21,7 +21,7 @@ class ConversationEntity extends Equatable {
   final String lastMessage;
   final DateTime lastModified;
   final List<UserEntity> members;
-  final List<MessageEntity> messages;
+  final List<MessageEntity>? messages;
 
   ConversationEntity copyWith({
     List<MessageEntity>? messages,

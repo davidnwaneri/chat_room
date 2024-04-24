@@ -15,7 +15,7 @@ final class ConversationListState extends Equatable {
       (e) => e.id == conversationId,
     );
 
-    return conversation.messages;
+    return conversation.messages ?? [];
   }
 
   ConversationListState copyWith({

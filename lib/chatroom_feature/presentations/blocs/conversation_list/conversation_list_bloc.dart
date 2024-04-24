@@ -15,6 +15,7 @@ class ConversationListBloc extends Bloc<ConversationListEvent, ConversationListS
         super(const ConversationListState()) {
     on<ConversationListFetched>(_onConversationListFetched);
     on<ConversationMessagesFetched>(_onConversationMessagesFetched);
+    on<MessageSent>(_onMessageSent);
     //
     add(const ConversationListFetched());
   }
@@ -77,4 +78,59 @@ class ConversationListBloc extends Bloc<ConversationListEvent, ConversationListS
       ),
     );
   }
+
+  Future<void> _onMessageSent(
+    MessageSent event,
+    Emitter<ConversationListState> emit,
+  ) async {
+    final messages = state.messagesForConversation(event.conversationId);
+    final newMessage = MessageEntity(
+      id: 'me',
+      text: event.message,
+      sentAt: DateTime.now(),
+      sender: 'me',
+    );
+
+    emit(
+      state.copyWith(
+        conversations: state.conversations.map((e) {
+          if (e.id == event.conversationId) {
+            return e.copyWith(messages: [...messages, newMessage]);
+          } else {
+            return e;
+          }
+        }).toList(),
+      ),
+    );
+
+    await Future<void>.delayed(const Duration(seconds: 2));
+    final automatedMessage = MessageEntity(
+      id: 'AI',
+      text: automatedMessages[state.messagesForConversation(event.conversationId).length % automatedMessages.length],
+      sentAt: DateTime.now(),
+      sender: 'AI',
+    );
+    emit(
+      state.copyWith(
+        conversations: state.conversations.map((e) {
+          if (e.id == event.conversationId) {
+            return e.copyWith(
+              messages: [
+                automatedMessage,
+                ...state.messagesForConversation(event.conversationId),
+              ],
+            );
+          } else {
+            return e;
+          }
+        }).toList(),
+      ),
+    );
+  }
+
+  final automatedMessages = <String>[
+    'Hello there',
+    'How are you doing',
+    'What are you up to today',
+  ];
 }

@@ -23,3 +23,16 @@ final class ConversationMessagesFetched extends ConversationListEvent {
   @override
   List<Object> get props => [conversationId];
 }
+
+final class MessageSent extends ConversationListEvent {
+  const MessageSent({
+    required this.conversationId,
+    required this.message,
+  });
+
+  final String conversationId;
+  final String message;
+
+  @override
+  List<Object> get props => [conversationId];
+}

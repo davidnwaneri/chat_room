@@ -12,6 +12,7 @@ import 'package:chatroom/utils/padding_constants.dart';
 import 'package:chatroom/utils/widget_library/widget_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iconsax/iconsax.dart';
 
 class ConversationScreen extends StatefulWidget {
   const ConversationScreen._({
@@ -76,6 +77,22 @@ class _ConversationScreenState extends State<ConversationScreen> {
       ChatroomDetailsScreen.routeName,
       arguments: widget.conversation,
     );
+  }
+
+  void _sendMessage() {
+    final message = _textController.text;
+    if (message.trim().isEmpty) return;
+
+    context //
+        .read<ConversationListBloc>() //
+        .add(
+          MessageSent(
+            conversationId: widget.conversation.id,
+            message: message,
+          ),
+        );
+    _textController.clear();
+    dismissKeyboard();
   }
 
   @override
@@ -155,8 +172,17 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 ),
                 Padding(
                   padding: horizontalPadding12 + const EdgeInsets.symmetric(vertical: 8),
-                  child: MessageTextField(
-                    controller: _textController,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: MessageTextField(
+                          controller: _textController,
+                        ),
+                      ),
+                      _SendButton(
+                        onTap: _sendMessage,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -186,6 +212,33 @@ class _MessageLoadedView extends StatelessWidget {
           message: message,
         );
       },
+    );
+  }
+}
+
+class _SendButton extends StatelessWidget {
+  const _SendButton({
+    required this.onTap,
+  });
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      color: Theme.of(context).primaryColor,
+      tooltip: 'Send',
+      onPressed: onTap,
+      icon: DecoratedBox(
+        decoration: ShapeDecoration(
+          shape: const CircleBorder(),
+          color: Theme.of(context).primaryColor.withOpacity(0.1),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.all(8),
+          child: Icon(Iconsax.send_2),
+        ),
+      ),
     );
   }
 }

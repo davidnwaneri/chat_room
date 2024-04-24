@@ -6,21 +6,24 @@ import 'package:flutter/foundation.dart';
 class ConversationEntity extends Equatable {
   const ConversationEntity({
     required this.id,
-    required this.topic,
+    required this.name,
     required this.lastMessage,
     required this.lastModified,
     required this.members,
+    this.topic,
   });
 
   final String id;
-  final String topic;
+  final String name;
+  final String? topic;
   final String lastMessage;
   final DateTime lastModified;
   final Iterable<UserEntity> members;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
+        name,
         topic,
         lastMessage,
         lastModified,
@@ -32,6 +35,7 @@ class ConversationEntity extends Equatable {
     return '''
       ${describeIdentity(this)}(
         id: $id,
+        name: $name,
         topic: $topic,
         lastModified: $lastModified,
         lastMessage: $lastMessage,

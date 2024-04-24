@@ -1,8 +1,10 @@
 import 'package:chatroom/chatroom_feature/domain/entities/conversation_entity.dart';
-import 'package:chatroom/chatroom_feature/domain/entities/user_entity.dart';
+import 'package:chatroom/chatroom_feature/presentations/blocs/conversation_list/conversation_list_bloc.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/conversation_widget.dart';
-import 'package:chatroom/core/padding_constants.dart';
+import 'package:chatroom/utils/padding_constants.dart';
+import 'package:chatroom/utils/widget_library/widget_library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
   // ignore: unused_element
@@ -40,23 +42,80 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: 7,
-        itemBuilder: (context, index) {
-          final conversation = ConversationEntity(
-            id: '$index',
-            topic: 'Around the world in 80 days',
-            lastMessage: 'Just got back from Maldives',
-            lastModified: DateTime(2024, 04, 20),
-            members: [
-              UserEntity(id: '${index + 1}', name: 'John doe'),
-            ],
-          );
-          return ConversationWidget(
-            conversation: conversation,
-            onTap: () {},
-          );
+      body: BlocBuilder<ConversationListBloc, ConversationListState>(
+        builder: (context, state) {
+          return switch (state.status) {
+            ConversationListInitial() => const SizedBox(),
+            ConversationListLoading() => const _ConversationsLoadingView(),
+            ConversationListSuccess() => _ConversationsLoadedView(state.conversations),
+            ConversationListFailure(:final message) => _ConversationErrorView(message),
+          };
         },
+      ),
+    );
+  }
+}
+
+class _ConversationsLoadedView extends StatelessWidget {
+  const _ConversationsLoadedView(this.conversations);
+
+  final List<ConversationEntity> conversations;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: conversations.length,
+      itemBuilder: (context, index) {
+        final conversation = conversations[index];
+        return ConversationWidget(
+          conversation: conversation,
+          onTap: () {},
+        );
+      },
+    );
+  }
+}
+
+class _ConversationsLoadingView extends StatelessWidget {
+  const _ConversationsLoadingView();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: CircularProgressIndicator(
+        strokeWidth: 1.5,
+      ),
+    );
+  }
+}
+
+class _ConversationErrorView extends StatelessWidget {
+  const _ConversationErrorView(this.message);
+
+  final String message;
+
+  void _fetchConversations(BuildContext context) {
+    context.read<ConversationListBloc>().add(const ConversationListFetched());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            message,
+            textAlign: TextAlign.center,
+          ),
+          const Space(5),
+          Center(
+            child: TextButton(
+              onPressed: () => _fetchConversations(context),
+              child: const Text('Retry'),
+            ),
+          ),
+        ],
       ),
     );
   }

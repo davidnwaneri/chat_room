@@ -95,7 +95,7 @@ class ConversationListBloc extends Bloc<ConversationListEvent, ConversationListS
       state.copyWith(
         conversations: state.conversations.map((e) {
           if (e.id == event.conversationId) {
-            return e.copyWith(messages: [...messages, newMessage]);
+            return e.copyWith(messages: [newMessage, ...messages]);
           } else {
             return e;
           }

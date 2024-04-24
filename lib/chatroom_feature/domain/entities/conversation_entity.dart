@@ -18,7 +18,7 @@ class ConversationEntity extends Equatable {
   final String? topic;
   final String lastMessage;
   final DateTime lastModified;
-  final Iterable<UserEntity> members;
+  final List<UserEntity> members;
 
   @override
   List<Object?> get props => [

@@ -26,3 +26,29 @@ class Space extends StatelessWidget {
     return Gap(value);
   }
 }
+
+/// {@template sliver_space_widget}
+/// A widget that adds spacing to a sliver's the main axis.
+///
+/// If the main axis is vertical, the spacing will
+/// be applied on the vertical axis.
+///
+/// If the main axis is horizontal, the spacing will
+/// be applied on the horizontal axis.
+///
+/// A wrapper around `SliverGap`
+/// {@endtemplate}
+class SliverSpace extends StatelessWidget {
+  /// {@macro sliver_space_widget}
+  const SliverSpace(
+    this.value, {
+    super.key,
+  });
+
+  final double value;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverGap(value);
+  }
+}

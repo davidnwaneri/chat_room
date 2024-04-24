@@ -30,7 +30,7 @@ class ConversationModel extends ConversationEntity {
         topic: topic,
         lastMessage: lastMessage,
         lastModified: DateTime.fromMillisecondsSinceEpoch(timestamp),
-        members: members.map((e) => UserModel.fromString(e as String)),
+        members: members.map((e) => UserModel.fromString(e as String)).toList(),
       );
     } on FormatException {
       rethrow;

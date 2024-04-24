@@ -1,15 +1,16 @@
 import 'package:chatroom/chatroom_feature/domain/entities/conversation_entity.dart';
+import 'package:chatroom/chatroom_feature/presentations/view/chatroom_details_screen.dart';
+import 'package:chatroom/chatroom_feature/presentations/widgets/chatroom_profile_avatar.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/message_text_field.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/message_widget.dart';
 import 'package:chatroom/utils/padding_constants.dart';
 import 'package:chatroom/utils/widget_library/widget_library.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 
 class ConversationScreen extends StatefulWidget {
-  // ignore: unused_element
   const ConversationScreen._({
     required this.conversation,
+    // ignore: unused_element
     super.key,
   });
 
@@ -58,15 +59,23 @@ class _ConversationScreenState extends State<ConversationScreen> {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
+  void _goToChatRoomDetails() {
+    Navigator.of(context).pushNamed(
+      ChatroomDetailsScreen.routeName,
+      arguments: widget.conversation,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: dismissKeyboard,
       child: Scaffold(
         appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
           titleSpacing: 0,
           title: InkWell(
-            onTap: () {},
+            onTap: _goToChatRoomDetails,
             customBorder: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(4)),
             ),
@@ -75,13 +84,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    child: Icon(
-                      Iconsax.profile_2user,
-                      size: 16,
-                    ),
-                  ),
+                  const ChatroomProfileAvatar(),
                   const Space(5),
                   Hero(
                     tag: widget.conversation.id,

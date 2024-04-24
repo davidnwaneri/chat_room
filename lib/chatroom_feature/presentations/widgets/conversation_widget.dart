@@ -1,9 +1,9 @@
 import 'package:chatroom/chatroom_feature/domain/entities/conversation_entity.dart';
+import 'package:chatroom/chatroom_feature/presentations/widgets/chatroom_profile_avatar.dart';
 import 'package:chatroom/core/formatters.dart';
 import 'package:chatroom/utils/padding_constants.dart';
 import 'package:chatroom/utils/widget_library/widget_library.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 
 class ConversationWidget extends StatelessWidget {
   const ConversationWidget({
@@ -30,13 +30,7 @@ class ConversationWidget extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const CircleAvatar(
-                backgroundColor: Colors.grey,
-                child: Icon(
-                  Iconsax.profile_2user,
-                  size: 16,
-                ),
-              ),
+              const ChatroomProfileAvatar(),
               const Space(10),
               Expanded(
                 child: Column(

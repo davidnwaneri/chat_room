@@ -1,3 +1,4 @@
+import 'package:chatroom/chatroom_feature/domain/entities/message_entity.dart';
 import 'package:chatroom/chatroom_feature/domain/entities/user_entity.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +11,7 @@ class ConversationEntity extends Equatable {
     required this.lastMessage,
     required this.lastModified,
     required this.members,
+    this.messages = const [],
     this.topic,
   });
 
@@ -19,6 +21,21 @@ class ConversationEntity extends Equatable {
   final String lastMessage;
   final DateTime lastModified;
   final List<UserEntity> members;
+  final List<MessageEntity> messages;
+
+  ConversationEntity copyWith({
+    List<MessageEntity>? messages,
+  }) {
+    return ConversationEntity(
+      id: id,
+      name: name,
+      lastMessage: lastMessage,
+      lastModified: lastModified,
+      members: members,
+      messages: messages ?? this.messages,
+      topic: topic,
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -28,6 +45,7 @@ class ConversationEntity extends Equatable {
         lastMessage,
         lastModified,
         members,
+        messages,
       ];
 
   @override
@@ -40,6 +58,7 @@ class ConversationEntity extends Equatable {
         lastModified: $lastModified,
         lastMessage: $lastMessage,
         members: $members,
+        messages: $messages,
       )
    ''';
   }

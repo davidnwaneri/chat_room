@@ -1,6 +1,7 @@
 import 'package:chatroom/app/app.dart';
 import 'package:chatroom/chatroom_feature/data/datasources/chat_room_remote_data_source.dart';
 import 'package:chatroom/chatroom_feature/data/repositories/chat_room_repository.dart';
+import 'package:chatroom/chatroom_feature/presentations/blocs/conversation_list/conversation_list_bloc.dart';
 import 'package:chatroom/core/network/network_client.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -34,7 +35,12 @@ void main() {
           ),
         ),
       ],
-      child: const ChatRoomApp(),
+      child: BlocProvider<ConversationListBloc>(
+        create: (context) => ConversationListBloc(
+          repository: context.read<ChatRoomRepository>(),
+        ),
+        child: const ChatRoomApp(),
+      ),
     ),
   );
 }

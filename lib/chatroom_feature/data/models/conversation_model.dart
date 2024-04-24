@@ -8,6 +8,7 @@ class ConversationModel extends ConversationEntity {
     required super.lastMessage,
     required super.lastModified,
     required super.members,
+    super.messages,
     super.topic,
   });
 

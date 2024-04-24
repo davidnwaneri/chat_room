@@ -1,10 +1,10 @@
-import 'package:chatroom/chatroom_feature/data/repositories/chat_room_repository.dart';
 import 'package:chatroom/chatroom_feature/domain/entities/conversation_entity.dart';
 import 'package:chatroom/chatroom_feature/presentations/blocs/conversation_list/conversation_list_bloc.dart';
 import 'package:chatroom/chatroom_feature/presentations/view/conversation_screen.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/conversation_widget.dart';
+import 'package:chatroom/chatroom_feature/presentations/widgets/error_view.dart';
+import 'package:chatroom/chatroom_feature/presentations/widgets/loading_view.dart';
 import 'package:chatroom/utils/padding_constants.dart';
-import 'package:chatroom/utils/widget_library/widget_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,17 +22,16 @@ class HomeScreen extends StatelessWidget {
         Animation<double> animation,
         Animation<double> secondaryAnimation,
       ) {
-        return BlocProvider<ConversationListBloc>(
-          create: (context) => ConversationListBloc(
-            repository: context.read<ChatRoomRepository>(),
-          ),
-          child: FadeTransition(
-            opacity: animation,
-            child: const HomeScreen._(),
-          ),
+        return FadeTransition(
+          opacity: animation,
+          child: const HomeScreen._(),
         );
       },
     );
+  }
+
+  void _fetchConversations(BuildContext context) {
+    context.read<ConversationListBloc>().add(const ConversationListFetched());
   }
 
   @override
@@ -54,9 +53,16 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           return switch (state.status) {
             ConversationListInitial() => const SizedBox(),
-            ConversationListLoading() => const _ConversationsLoadingView(),
+            ConversationListLoading(:final conversationId) => (conversationId == null) //
+                ? const LoadingView() //
+                : _ConversationsLoadedView(state.conversations),
             ConversationListSuccess() => _ConversationsLoadedView(state.conversations),
-            ConversationListFailure(:final message) => _ConversationErrorView(message),
+            ConversationListFailure(:final message, :final conversationId) => (conversationId == null)
+                ? ErrorView(
+                    message: message,
+                    onRetry: () => _fetchConversations(context),
+                  )
+                : _ConversationsLoadedView(state.conversations),
           };
         },
       ),
@@ -78,6 +84,17 @@ class _ConversationsLoadedView extends StatelessWidget {
         return ConversationWidget(
           conversation: conversation,
           onTap: () {
+            final hasFetchedMessages = context //
+                .read<ConversationListBloc>() //
+                .state //
+                .conversations //
+                .firstWhere((e) => e.id == conversation.id) //
+                .messages
+                .isNotEmpty;
+            if (hasFetchedMessages == false) {
+              context.read<ConversationListBloc>().add(ConversationMessagesFetched(conversation.id));
+            }
+
             Navigator.of(context).pushNamed(
               ConversationScreen.routeName,
               arguments: conversation,
@@ -85,51 +102,6 @@ class _ConversationsLoadedView extends StatelessWidget {
           },
         );
       },
-    );
-  }
-}
-
-class _ConversationsLoadingView extends StatelessWidget {
-  const _ConversationsLoadingView();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(
-        strokeWidth: 1.5,
-      ),
-    );
-  }
-}
-
-class _ConversationErrorView extends StatelessWidget {
-  const _ConversationErrorView(this.message);
-
-  final String message;
-
-  void _fetchConversations(BuildContext context) {
-    context.read<ConversationListBloc>().add(const ConversationListFetched());
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            message,
-            textAlign: TextAlign.center,
-          ),
-          const Space(5),
-          Center(
-            child: TextButton(
-              onPressed: () => _fetchConversations(context),
-              child: const Text('Retry'),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

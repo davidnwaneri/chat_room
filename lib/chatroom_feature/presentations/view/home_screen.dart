@@ -1,5 +1,7 @@
+import 'package:chatroom/chatroom_feature/data/repositories/chat_room_repository.dart';
 import 'package:chatroom/chatroom_feature/domain/entities/conversation_entity.dart';
 import 'package:chatroom/chatroom_feature/presentations/blocs/conversation_list/conversation_list_bloc.dart';
+import 'package:chatroom/chatroom_feature/presentations/view/conversation_screen.dart';
 import 'package:chatroom/chatroom_feature/presentations/widgets/conversation_widget.dart';
 import 'package:chatroom/utils/padding_constants.dart';
 import 'package:chatroom/utils/widget_library/widget_library.dart';
@@ -20,9 +22,14 @@ class HomeScreen extends StatelessWidget {
         Animation<double> animation,
         Animation<double> secondaryAnimation,
       ) {
-        return FadeTransition(
-          opacity: animation,
-          child: const HomeScreen._(),
+        return BlocProvider<ConversationListBloc>(
+          create: (context) => ConversationListBloc(
+            repository: context.read<ChatRoomRepository>(),
+          ),
+          child: FadeTransition(
+            opacity: animation,
+            child: const HomeScreen._(),
+          ),
         );
       },
     );
@@ -69,7 +76,12 @@ class _ConversationsLoadedView extends StatelessWidget {
         final conversation = conversations[index];
         return ConversationWidget(
           conversation: conversation,
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              ConversationScreen.routeName,
+              arguments: conversation,
+            );
+          },
         );
       },
     );
